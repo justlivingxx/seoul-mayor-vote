@@ -1,34 +1,34 @@
 {
-  "updated_at": "2026-06-04 03:34:19",
+  "updated_at": "2026-06-04 03:35:53",
   "candidates": [
     {
       "party": "더불어민주당",
       "name": "정원오",
-      "votes": 1720910,
-      "rate": 51.17
+      "votes": 1727349,
+      "rate": 51.14
     },
     {
       "party": "국민의힘",
       "name": "오세훈",
-      "votes": 1552149,
-      "rate": 46.15
+      "votes": 1559473,
+      "rate": 46.17
     },
     {
       "party": "개혁신당",
       "name": "김정철",
-      "votes": 26991,
+      "votes": 27130,
       "rate": 0.8
     },
     {
       "party": "여성의당",
       "name": "유지혜",
-      "votes": 27636,
+      "votes": 27736,
       "rate": 0.82
     },
     {
       "party": "정의당",
       "name": "권영국",
-      "votes": 35367,
+      "votes": 35513,
       "rate": 1.05
     }
   ]
