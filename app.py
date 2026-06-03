@@ -15,6 +15,17 @@ st.markdown("""
         body { background-color: #1a0a2e; }
         .stApp { background-color: #1a0a2e; }
         h1, h2, h3, p, div { color: #f0eaff; }
+
+        /* 모바일 여백 제거 */
+        .block-container {
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            padding-top: 20px !important;
+            max-width: 100% !important;
+        }
+
+        /* 버튼/divider 색상 */
+        hr { border-color: #3a2a5e; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -29,67 +40,107 @@ def render_candidate(cand, highlight=False):
     if highlight:
         bg = "#3d1a6e"
         border = "#9b59b6"
-        bar_color = "#9b59b6"
-        name_size = "42px"
-        party_size = "20px"
-        votes_size = "56px"   # ✅ 득표수 제일 크게
-        rate_size = "22px"    # ✅ 비율은 작게
-        padding = "36px 40px"
-        margin = "20px 0px"
-        bar_height = "18px"
+        bar_color = "#ce93d8"
         name_prefix = "⭐ "
+        name_size = "clamp(22px, 6vw, 38px)"
+        party_size = "clamp(13px, 3.5vw, 18px)"
+        votes_size = "clamp(26px, 8vw, 48px)"
+        rate_size = "clamp(13px, 3.5vw, 18px)"
+        padding = "clamp(16px, 4vw, 32px)"
+        margin = "16px 0px"
+        bar_height = "14px"
+        radius = "16px"
     else:
         bg = "#1e1e2e"
         border = "#3a3a5c"
         bar_color = "#5a5a8a"
-        name_size = "13px"
-        party_size = "11px"
-        votes_size = "15px"
-        rate_size = "11px"
-        padding = "10px 16px"
-        margin = "4px 0px"
-        bar_height = "6px"
         name_prefix = ""
+        name_size = "clamp(13px, 3.8vw, 17px)"
+        party_size = "clamp(11px, 3vw, 14px)"
+        votes_size = "clamp(15px, 4.5vw, 20px)"
+        rate_size = "clamp(11px, 3vw, 14px)"
+        padding = "clamp(10px, 3vw, 18px)"
+        margin = "6px 0px"
+        bar_height = "7px"
+        radius = "12px"
 
     st.markdown(f"""
         <div style='
             background:{bg};
             border:1.5px solid {border};
-            border-radius:12px;
+            border-radius:{radius};
             padding:{padding};
             margin:{margin};
+            box-sizing:border-box;
+            width:100%;
         '>
-            <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:{"16px" if highlight else "8px"};'>
-                <div>
-                    <div style='font-size:{name_size}; font-weight:bold; color:#f0eaff;'>
+            <div style='
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+                margin-bottom:12px;
+                gap:8px;
+            '>
+                <div style='flex:1; min-width:0;'>
+                    <div style='
+                        font-size:{name_size};
+                        font-weight:bold;
+                        color:#f0eaff;
+                        word-break:keep-all;
+                        line-height:1.3;
+                    '>
                         {name_prefix}{cand["name"]}
                     </div>
-                    <div style='font-size:{party_size}; color:#b39ddb; margin-top:4px;'>
+                    <div style='
+                        font-size:{party_size};
+                        color:#b39ddb;
+                        margin-top:4px;
+                        word-break:keep-all;
+                    '>
                         {cand["party"]}
                     </div>
                 </div>
-                <div style='text-align:right;'>
-                    <div style='font-size:{votes_size}; font-weight:bold; color:#ce93d8;'>
+                <div style='text-align:right; flex-shrink:0;'>
+                    <div style='
+                        font-size:{votes_size};
+                        font-weight:bold;
+                        color:#ce93d8;
+                        white-space:nowrap;
+                    '>
                         {cand["votes"]:,}표
                     </div>
-                    <div style='font-size:{rate_size}; color:#b39ddb; margin-top:4px;'>
+                    <div style='
+                        font-size:{rate_size};
+                        color:#b39ddb;
+                        margin-top:2px;
+                    '>
                         {cand["rate"]}%
                     </div>
                 </div>
             </div>
-            <div style='background:#2a2a4a; border-radius:6px; height:{bar_height};'>
+
+            <!-- 프로그레스 바 -->
+            <div style='background:#2a2a4a; border-radius:99px; height:{bar_height}; overflow:hidden;'>
                 <div style='
                     background:{bar_color};
                     width:{min(cand["rate"], 100)}%;
                     height:{bar_height};
-                    border-radius:6px;
+                    border-radius:99px;
+                    transition: width 0.5s ease;
                 '></div>
             </div>
         </div>
     """, unsafe_allow_html=True)
 
 def main():
-    st.markdown("<h1 style='text-align:center; color:#ce93d8;'>💜유지혜를 뽑은 사람들💜</h1>", unsafe_allow_html=True)
+    # 타이틀
+    st.markdown("""
+        <div style='text-align:center; padding: 8px 0 4px 0;'>
+            <div style='font-size:clamp(20px, 6vw, 32px); font-weight:bold; color:#ce93d8; line-height:1.4;'>
+                💜 유지혜를 뽑은 사람들 💜
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
     data = load_data()
 
@@ -97,7 +148,18 @@ def main():
         st.error("data.json 파일이 없어요!")
         return
 
-    st.markdown(f"<p style='text-align:center; color:#7e57c2; font-size:13px;'>🕐 {data['updated_at']} 기준 · 30초마다 자동 갱신</p>", unsafe_allow_html=True)
+    # 업데이트 시간
+    st.markdown(f"""
+        <div style='
+            text-align:center;
+            color:#7e57c2;
+            font-size:clamp(11px, 3vw, 13px);
+            margin: 6px 0 12px 0;
+        '>
+            🕐 {data['updated_at']} 기준 · 30초마다 자동 갱신
+        </div>
+    """, unsafe_allow_html=True)
+
     st.divider()
 
     candidates = data["candidates"]
@@ -110,6 +172,9 @@ def main():
     for cand in sorted_candidates:
         is_womens = "여성의당" in cand["party"]
         render_candidate(cand, highlight=is_womens)
+
+    # 하단 여백
+    st.markdown("<div style='height:40px'></div>", unsafe_allow_html=True)
 
     time.sleep(30)
     st.rerun()
